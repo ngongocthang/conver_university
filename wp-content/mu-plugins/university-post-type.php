@@ -1,5 +1,4 @@
 <?php
-// Đăng ký custom post type cho sự kiện và slide
 function university_post_types() {
     // Đăng ký post type cho sự kiện
     register_post_type('event', array(
@@ -70,7 +69,7 @@ function university_event_meta() {
     add_meta_box('event_date', 'Event Date', 'university_event_date_callback', 'event', 'normal', 'high');
 }
 
-// Thêm trường tùy chỉnh cho slide (nếu cần)
+// Thêm trường tùy chỉnh cho slide
 function university_slide_meta() {
     add_meta_box('slide_info', 'Slide Information', 'university_slide_info_callback', 'slide', 'normal', 'high');
 }
@@ -80,19 +79,30 @@ add_action('add_meta_boxes', 'university_slide_meta');
 
 // Callback cho trường tùy chỉnh của sự kiện
 function university_event_date_callback($post) {
-    // Nội dung cho trường tùy chỉnh của sự kiện
     echo '<input type="date" name="event_date" value="' . get_post_meta($post->ID, 'event_date', true) . '">';
 }
 
 // Callback cho trường tùy chỉnh của slide
 function university_slide_info_callback($post) {
-    // Nội dung cho trường tùy chỉnh của slide
     echo '<input type="text" name="slide_info" value="' . get_post_meta($post->ID, 'slide_info', true) . '">';
 }
 
-// Hỗ trợ hình ảnh đại diện
+// Hỗ trợ hình ảnh 
 function my_theme_setup() {
     add_theme_support('post-thumbnails');
 }
 
 add_action('after_setup_theme', 'my_theme_setup');
+
+function save_event_date($post_id) {
+    if (!isset($_POST['event_date']) || !current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    $eventDate = sanitize_text_field($_POST['event_date']);
+    $formattedDate = date('Y-m-d', strtotime($eventDate));
+    update_post_meta($post_id, 'event_date', $formattedDate);
+}
+
+add_action('save_post', 'save_event_date');
+
