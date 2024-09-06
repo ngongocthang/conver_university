@@ -37,6 +37,23 @@ function university_post_types() {
         'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
         'menu_icon' => 'dashicons-slides',
     ));
+
+    // Đăng ký post type cho program
+    register_post_type('program', array(
+        'labels' => array(
+            'name' => 'Programs',
+            'singular_name' => 'Program',
+            'add_new_item' => 'Add New Program',
+            'edit_item' => 'Edit Program',
+            'all_items' => 'All Programs',
+            'view_item' => 'View program',
+            'not_found' => 'No programs found',
+            'not_found_in_trash' => 'No Programs found in Trash'
+        ),
+        'public' => true,
+        'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
+        'menu_icon' => 'dashicons-format-aside',
+    ));
 }
 
 add_action('init', 'university_post_types');

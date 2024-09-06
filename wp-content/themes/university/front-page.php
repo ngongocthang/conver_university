@@ -19,13 +19,13 @@ $homepageEvents = new WP_Query(array(
     'posts_per_page' => 2,
     'post_type' => 'event',
     'meta_key' => 'event_date',
-    'orderby' => 'meta_value_num',
+    'orderby' => 'meta_value',
     'order' => 'ASC',
     'meta_query' => array(
         array(
             'key' => 'event_date',
             'compare' => '>=',
-            'type' => 'numeric'
+            'type' => 'DATE' // Sử dụng kiểu DATE
         )
     )
 ));
@@ -41,7 +41,8 @@ $homepageEvents = new WP_Query(array(
                 $eventDate = get_post_meta(get_the_ID(), 'event_date', true); // Lấy ngày sự kiện
             ?>
                 <div class="event-summary">
-                    <a class="event-summary__date t-center" href="<?php echo esc_url(get_the_permalink()); ?>">
+                <?php echo date("d/m/Y", strtotime($eventDate)); ?>
+                    <a class="event-summary__date t-center">
                         <span class="event-summary__month"><?php echo date("M", strtotime($eventDate)); ?></span>
                         <span class="event-summary__day"><?php echo date("d", strtotime($eventDate)); ?></span>
                     </a>
@@ -58,38 +59,38 @@ $homepageEvents = new WP_Query(array(
     </div>
 
     <div class="full-width-split__two">
-    <div class="full-width-split__inner">
-        <h2 class="headline headline--small-plus t-center">From Our Blogs</h2>
+        <div class="full-width-split__inner">
+            <h2 class="headline headline--small-plus t-center">From Our Blogs</h2>
 
-        <?php
-        $homepageBlogs = new WP_Query(array(
-            'posts_per_page' => 2,
-            'post_type' => 'post',
-        ));
+            <?php
+            $homepageBlogs = new WP_Query(array(
+                'posts_per_page' => 2,
+                'post_type' => 'post',
+            ));
 
-        if ($homepageBlogs->have_posts()) {
-            while ($homepageBlogs->have_posts()) {
-                $homepageBlogs->the_post(); ?>
-                <div class="event-summary">
-                    <a class="event-summary__date event-summary__date--beige t-center" href="<?php echo esc_url(get_the_permalink()); ?>">
-                        <span class="event-summary__month"><?php the_time("M"); ?></span>
-                        <span class="event-summary__day"><?php the_time("d"); ?></span>
-                    </a>
-                    <div class="event-summary__content">
-                        <h5 class="event-summary__title headline headline--tiny"><a href="<?php echo esc_url(get_the_permalink()); ?>"><?php the_title(); ?></a></h5>
-                        <p><?php echo wp_trim_words(get_the_excerpt(), 18); ?> <a href="<?php echo esc_url(get_the_permalink()); ?>" class="nu gray">Read more</a></p>
+            if ($homepageBlogs->have_posts()) {
+                while ($homepageBlogs->have_posts()) {
+                    $homepageBlogs->the_post(); ?>
+                    <div class="event-summary">
+                        <a class="event-summary__date event-summary__date--beige t-center">
+                            <span class="event-summary__month"><?php the_time("M"); ?></span>
+                            <span class="event-summary__day"><?php the_time("d"); ?></span>
+                        </a>
+                        <div class="event-summary__content">
+                            <h5 class="event-summary__title headline headline--tiny"><a href="<?php echo esc_url(get_the_permalink()); ?>"><?php the_title(); ?></a></h5>
+                            <p><?php echo wp_trim_words(get_the_excerpt(), 18); ?> <a href="<?php echo esc_url(get_the_permalink()); ?>" class="nu gray">Read more</a></p>
+                        </div>
                     </div>
-                </div>
             <?php }
-        } else {
-            echo '<p>No blog posts found.</p>';
-        }
-        wp_reset_postdata();
-        ?>
+            } else {
+                echo '<p>No blog posts found.</p>';
+            }
+            wp_reset_postdata();
+            ?>
 
-        <p class="t-center no-margin"><a href="<?php echo esc_url(get_post_type_archive_link('post')); ?>" class="btn btn--yellow">View All Blog Posts</a></p>
+            <p class="t-center no-margin"><a href="<?php echo esc_url(get_post_type_archive_link('post')); ?>" class="btn btn--yellow">View All Blog Posts</a></p>
+        </div>
     </div>
-</div>
 
 </div>
 
@@ -107,15 +108,15 @@ $homepageEvents = new WP_Query(array(
                     $sliderPosts->the_post();
                     $backgroundImage = get_the_post_thumbnail_url(get_the_ID(), 'full');
             ?>
-                <div class="hero-slider__slide" style="background-image: url(<?php echo esc_url($backgroundImage); ?>)">
-                    <div class="hero-slider__interior container">
-                        <div class="hero-slider__overlay">
-                            <h2 class="headline headline--medium t-center"><?php the_title(); ?></h2>
-                            <p class="t-center"><?php echo wp_trim_words(get_the_excerpt(), 18); ?></p>
-                            <p class="t-center no-margin"><a href="<?php echo esc_url(get_the_permalink()); ?>" class="btn btn--blue">Learn more</a></p>
+                    <div class="hero-slider__slide" style="background-image: url(<?php echo esc_url($backgroundImage); ?>)">
+                        <div class="hero-slider__interior container">
+                            <div class="hero-slider__overlay">
+                                <h2 class="headline headline--medium t-center"><?php the_title(); ?></h2>
+                                <p class="t-center"><?php echo wp_trim_words(get_the_excerpt(), 18); ?></p>
+                                <p class="t-center no-margin"><a href="<?php echo esc_url(get_the_permalink()); ?>" class="btn btn--blue">Learn more</a></p>
+                            </div>
                         </div>
                     </div>
-                </div>
             <?php
                 }
             } else {
