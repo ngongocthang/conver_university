@@ -1,4 +1,5 @@
 <?php
+// Đăng ký các post type
 function university_post_types() {
     // Đăng ký post type cho sự kiện
     register_post_type('event', array(
@@ -46,13 +47,30 @@ function university_post_types() {
             'add_new_item' => 'Add New Program',
             'edit_item' => 'Edit Program',
             'all_items' => 'All Programs',
-            'view_item' => 'View program',
+            'view_item' => 'View Program',
             'not_found' => 'No programs found',
             'not_found_in_trash' => 'No Programs found in Trash'
         ),
         'public' => true,
         'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
         'menu_icon' => 'dashicons-format-aside',
+    ));
+
+    // Đăng ký post type cho campuses
+    register_post_type('campuses', array(
+        'labels' => array(
+            'name' => 'Campuses',
+            'singular_name' => 'Campus',
+            'add_new_item' => 'Add New Campus',
+            'edit_item' => 'Edit Campus',
+            'all_items' => 'All Campuses',
+            'view_item' => 'View Campus',
+            'not_found' => 'No Campuses found',
+            'not_found_in_trash' => 'No Campuses found in Trash'
+        ),
+        'public' => true,
+        'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
+        'menu_icon' => 'dashicons-welcome-add-page',
     ));
 }
 
@@ -111,6 +129,7 @@ function my_theme_setup() {
 
 add_action('after_setup_theme', 'my_theme_setup');
 
+// Lưu ngày sự kiện
 function save_event_date($post_id) {
     if (!isset($_POST['event_date']) || !current_user_can('edit_post', $post_id)) {
         return;
@@ -122,4 +141,26 @@ function save_event_date($post_id) {
 }
 
 add_action('save_post', 'save_event_date');
+
+// Thay đổi logo trang đăng nhập
+function my_custom_login_logo() {
+    echo '<style type="text/css">
+        h1 a {
+            background-image: url(' . get_stylesheet_directory_uri() . '/images/barksalot.jpg) !important;
+            background-size: cover !important;
+            width: 100px !important;
+            height: 100px !important;
+            border-radius: 50% !important;
+            display: block;
+        }
+    </style>';
+}
+add_action('login_enqueue_scripts', 'my_custom_login_logo');
+
+
+// Thay đổi đường link logo
+function my_custom_login_url() {
+    return 'https://www.facebook.com/ngongocthang18082004/';
+}
+add_filter('login_headerurl', 'my_custom_login_url');
 
